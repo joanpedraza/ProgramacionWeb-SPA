@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Materias</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Registro de Materias</h1>
+
+    <form id="materiaForm">
+      <div class="mb-3">
+        <label for="nombreMateria" class="form-label">Nombre de la materia:</label>
+        <input type="text" id="nombreMateria" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="notaMateria" class="form-label">Nota:</label>
+        <input type="number" id="notaMateria" class="form-control" required>
+      </div>
+
+      <button type="button" onclick="agregarMateria()" class="btn btn-primary">Agregar Materia</button>
+    </form>
+
+    <h2 class="mt-5 mb-3">Materias Registradas</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Nombre de la materia</th>
+          <th scope="col">Nota</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="materiasList"></tbody>
+    </table>
+
+    <button onclick="calcularPromedio()" class="btn btn-success">Calcular Promedio</button>
+    <p id="promedio" class="mt-3"></p>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <script>
+    function agregarMateria() {
+      // Obtener valores del formulario
+      const nombre = document.getElementById('nombreMateria').value;
+      const nota = document.getElementById('notaMateria').value;
+
+      // Crear elementos HTML para la nueva fila
+      const newRow = document.createElement('tr');
+      const nombreCell = document.createElement('td');
+      const notaCell = document.createElement('td');
+      const accionesCell = document.createElement('td');
+
+      // Asignar valores a las celdas
+      nombreCell.textContent = nombre;
+      notaCell.textContent = nota;
+
+      // Crear botones de editar y eliminar
+      const editarButton = document.createElement('button');
+      editarButton.textContent = 'Editar';
+      editarButton.onclick = function() {
+        const nombreActual = nombreCell.textContent;
+        const notaActual = notaCell.textContent;
+
+        const inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.value = nombreActual;
+
+        const inputNota = document.createElement('input');
+        inputNota.type = 'number';
+        inputNota.value = notaActual;
+
+        nombreCell.textContent = '';
+        nombreCell.appendChild(inputNombre);
+
+        notaCell.textContent = '';
+        notaCell.appendChild(inputNota);
+
+        const guardarButton = document.createElement('button');
+        guardarButton.textContent = 'Guardar';
+        accionesCell.replaceChild(guardarButton, editarButton);
+
+        guardarButton.onclick = function() {
+          nombreCell.textContent = inputNombre.value;
+          notaCell.textContent = inputNota.value;
+
+          accionesCell.replaceChild(editarButton, guardarButton);
+        };
+      };
+
+      const eliminarButton = document.createElement('button');
+      eliminarButton.textContent = 'Eliminar';
+      eliminarButton.onclick = function() {
+        newRow.remove();
+      };
+
+      // Agregar botones a la celda de acciones
+      accionesCell.appendChild(editarButton);
+      accionesCell.appendChild(eliminarButton);
+
+      // Agregar celdas a la fila
+      newRow.appendChild(nombreCell);
+      newRow.appendChild(notaCell);
+      newRow.appendChild(accionesCell);
+
+      // Agregar fila a la tabla
+      document.getElementById('materiasList').appendChild(newRow);
+
+      // Limpiar campos después de agregar la materia
+      document.getElementById('nombreMateria').value = '';
+      document.getElementById('notaMateria').value = '';
+    }
+
+    function calcularPromedio() {
+      const materiasList = document.getElementById('materiasList');
+      const notas = [];
+      
+      // Obtener todas las notas de las materias
+      materiasList.querySelectorAll('tr').forEach(function(row) {
+        const notaCell = row.querySelector('td:nth-child(2)');
+        if (notaCell) {
+          const nota = parseInt(notaCell.textContent);
+          if (!isNaN(nota)) {
+            notas.push(nota);
+          }
+        }
+      });
+
+      // Calcular el promedio
+      if (notas.length > 0) {
+        const sumaNotas = notas.reduce((acc, nota) => acc + nota, 0);
+        const promedio = sumaNotas / notas.length;
+        
+        // Mostrar el promedio en el elemento HTML
+        const promedioElement = document.getElementById('promedio');
+        promedioElement.textContent = `Promedio de notas: ${promedio.toFixed(2)}`;
+      } else {
+        alert('No hay notas para calcular el promedio.');
+      }
+    }
+  </script>
+</body>
+</html>
