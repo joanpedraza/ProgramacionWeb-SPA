@@ -1,0 +1,21 @@
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Registro de Materias</h1>
+
+    <form action="" id="materiaForm">
+      <div class="mb-3">
+        <div class="form-group">
+        <label for="" class="form-label">Nombre de la materia:</label>
+        <input [(ngModel)]="materia.nombre" name="nombre" type="text" id="nombreMateria" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="form-group">
+        <label for="" class="form-label">Creditos:</label>
+        <input [(ngModel)]="materia.creditos" name="creditos" type="number" id="creditoMateria" class="form-control" required>
+        </div>
+      </div>
+
+      <button (click)="Guardar()" class="btn btn-primary">Agregar Materia</button>
+    </form>
+</div>
